@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='StarBeast3' beautistatus='noAutoSetClockRate|noAutoUpdateFixMeanSubstRate' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.base.evolution.alignment:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="BEAST.base v2.7.3:starbeast3 v1.1.5:bModelTest v1.3.3:OBAMA v1.1.1:BEASTLabs v2.0.0:ORC v1.1.1" version="2.7">
+
+
+
+
+<plate var="n" range="data">  
+    <substModel id="OBAMA_substmodel.s:$(n)" spec="obama.substitutionmodel.OBAMAModel" modelIndicator="@OBAMA_ModelIndicator.s:$(n)" useExternalFreqs="@OBAMA_useExternalFreqs.s:$(n)">
+        <model id="OBAMA_Blosum62.$(n)" spec="obama.substitutionmodel.OBAMA_Blosum62"/>
+        <model id="OBAMA_CpREV.$(n)" spec="obama.substitutionmodel.OBAMA_CpREV"/>
+        <model id="OBAMA_DCMut.$(n)" spec="obama.substitutionmodel.OBAMA_DCMut"/>
+        <model id="OBAMA_Dayhoff.$(n)" spec="obama.substitutionmodel.OBAMA_Dayhoff"/>
+        <model id="OBAMA_FLU.$(n)" spec="obama.substitutionmodel.OBAMA_FLU"/>
+        <model id="OBAMA_HIVb.$(n)" spec="obama.substitutionmodel.OBAMA_HIVb"/>
+        <model id="OBAMA_HIVw.$(n)" spec="obama.substitutionmodel.OBAMA_HIVw"/>
+        <model id="OBAMA_JTT.$(n)" spec="obama.substitutionmodel.OBAMA_JTT"/>
+        <model id="OBAMA_LG.$(n)" spec="obama.substitutionmodel.OBAMA_LG"/>
+        <model id="OBAMA_MtArt.$(n)" spec="obama.substitutionmodel.OBAMA_MtArt"/>
+        <model id="OBAMA_MtREV.$(n)" spec="obama.substitutionmodel.OBAMA_MtREV"/>
+        <model id="OBAMA_MtMam.$(n)" spec="obama.substitutionmodel.OBAMA_MtMam"/>
+        <model id="OBAMA_RtREV.$(n)" spec="obama.substitutionmodel.OBAMA_RtREV"/>
+        <model id="OBAMA_VT.$(n)" spec="obama.substitutionmodel.OBAMA_VT"/>
+        <model id="OBAMA_WAG.$(n)" spec="obama.substitutionmodel.OBAMA_WAG"/>
+        <!--<model id="OBAMA_AsymPfam.$(n)" spec="obama.substitutionmodel.OBAMA_AsymPfam"/>-->
+        <frequencies id="OBAMA_freqs.s:$(n)" spec="Frequencies" frequencies="@frequencies_OBAMA.s:$(n)"/>
+    </substModel>
+</plate>
+         
+
+<plate var="n" range="data">            
+    
+
+
+    <branchRateModel id="branchRateModelSequence.c:$(n)" spec="starbeast3.evolution.branchratemodel.StarBeast3Clock" clock.rate="@aminoAcidSubstRate" sharedRateModel="@branchRatesModel.Species" tree="@Tree.t:$(n)"/>
+
+</plate>
+
+
+
+           <!-- Sequence likelihood -->
+            <plate var="n" range="data">
+                <distribution id="treeLikelihood.$(n)" spec="TreeLikelihood" tree="@Tree.t:data" scaling="always">
+
+                 
+                    <siteModel id="OBAMA.s:$(n)" spec="obama.sitemodel.OBAMAModelTestSiteModel" gammaCategoryCount="1" hasGammaRates="@OBAMA_hasGammaRates.s:data" hasInvariantSites="@OBAMA_hasInvariableSites.s:data" mutationRate="@clockRate.c:$(n)" proportionInvariant="@OBAMA_ProportionInvariable.s:data" shape="@OBAMA_gammaShape.s:$(n)">
+                        <substModel idref="OBAMA_substmodel.s:data" />
+                    </siteModel>
+                   
+                    <data idref="$(n)" />
+                    <branchRateModel idref="branchRateModelSequence.c:data" />
+                </distribution>
+
+             </plate>
+
+
+
+    <data id='data.trait' spec='Alignment' dataType='binary' name='alignment'>
+        <sequence value='1' spec='beast.base.evolution.alignment.Sequence' taxon='A.1'/>
+        <sequence value='1' spec='beast.base.evolution.alignment.Sequence' taxon='A.2'/>
+        <sequence value='1' spec='beast.base.evolution.alignment.Sequence' taxon='A.3'/>
+        <sequence value='0' spec='beast.base.evolution.alignment.Sequence' taxon='B.1'/>
+        <sequence value='0' spec='beast.base.evolution.alignment.Sequence' taxon='B.2'/>
+        <sequence value='0' spec='beast.base.evolution.alignment.Sequence' taxon='C.1'/>
+    </data>
+
+
+    <data id='data' spec='Alignment' dataType='aminoacid' name='alignment'>
+        <sequence spec='Sequence' taxon='A.1' totalcount='20' value='AGHT'/>
+        <sequence spec='Sequence' taxon='A.2' totalcount='20' value='SGER'/>
+        <sequence spec='Sequence' taxon='A.3' totalcount='20' value='SGER'/>
+        <sequence spec='Sequence' taxon='B.1' totalcount='20' value='----'/>
+        <sequence spec='Sequence' taxon='B.2' totalcount='20' value='----'/>
+        <sequence spec='Sequence' taxon='C.1' totalcount='20' value='----'/>
+    </data>
+
+
+                    
+
+    <taxon id="taxa" spec="TaxonSet">
+        <taxon idref="A.1" spec="Taxon"/>
+        <taxon idref="A.2" spec="Taxon"/>
+        <taxon idref="A.3" spec="Taxon"/>
+        <taxon idref="B.1" spec="Taxon"/>
+        <taxon idref="B.2" spec="Taxon"/>
+        <taxon idref="C.1" spec="Taxon"/>
+    </taxon>
+
+
+    
+      
+
+
+    <map name="Uniform" >beast.base.inference.distribution.Uniform</map>
+
+    <map name="Exponential" >beast.base.inference.distribution.Exponential</map>
+
+    <map name="LogNormal" >beast.base.inference.distribution.LogNormalDistributionModel</map>
+
+    <map name="Normal" >beast.base.inference.distribution.Normal</map>
+
+    <map name="Beta" >beast.base.inference.distribution.Beta</map>
+
+    <map name="Gamma" >beast.base.inference.distribution.Gamma</map>
+
+    <map name="LaplaceDistribution" >beast.base.inference.distribution.LaplaceDistribution</map>
+
+    <map name="prior" >beast.base.inference.distribution.Prior</map>
+
+    <map name="InverseGamma" >beast.base.inference.distribution.InverseGamma</map>
+
+    <map name="OneOnX" >beast.base.inference.distribution.OneOnX</map>
+
+
+    <branchRateModel id="branchRateModelCognate.c:taxa" spec="starbeast3.evolution.branchratemodel.StrictClockModelSB3" clock.rate="1.0" tree="@Tree.t:Species" />
+   
+    <run id="mcmc" spec="MCMC" chainLength="100000000" storeEvery="50000">
+        <state id="state" spec="State" storeEvery="50000">
+            <stateNode id="Tree.t:Species" spec="starbeast3.tree.SpeciesTree">
+                <taxonset id="taxonsuperset" spec="starbeast3.tree.StarBeast3TaxonSet">
+
+                     <taxon id='A' spec='TaxonSet'>
+                        <taxon id='A.1' spec='Taxon'/>
+                        <taxon id='A.2' spec='Taxon'/>
+                        <taxon id='A.3' spec='Taxon'/>
+                     </taxon>
+
+                     <taxon id='B' spec='TaxonSet'>
+                        <taxon id='B.1' spec='Taxon'/>
+                        <taxon id='B.2' spec='Taxon'/>
+                     </taxon>
+
+                      <taxon id='C' spec='TaxonSet'>
+                        <taxon id='C.1' spec='Taxon'/>
+                     </taxon>
+
+                </taxonset>
+            </stateNode>
+            <parameter id="speciationRate.t:Species" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+            <parameter id="popSize" spec="parameter.RealParameter" lower="0.0" name="stateNode">0.5</parameter>
+            <parameter id="popMean" spec="parameter.RealParameter" lower="1e-3" name="stateNode">1.0</parameter>
+            
+            <tree id="Tree.t:data" spec="beast.base.evolution.tree.Tree" name="stateNode" taxonset="@taxa" />
+            <parameter id="mutationRate.s:taxa" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+
+             <plate var="n" range="data">
+                <parameter id="clockRate.c:$(n)" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+         </plate>
+
+            <plate var="n" range="data">
+
+                
+                
+                <!--<tree id="Tree.t:$(n)" spec="starbeast3.tree.BinaryTree" name="stateNode">-->
+                    
+                    
+
+                <parameter id="traitBirth.s:$(n)" spec="parameter.RealParameter" estimate="true" lower="0.0" name="stateNode">1.0</parameter>
+                <stateNode id="CognateTree.t:$(n)" spec="simba.CognatePrunedTree" tree="@Tree.t:data" estimate="false" birth="@traitBirth.s:$(n)">
+                    <data idref="$(n).trait"/>
+                </stateNode>
+
+                <stateNode id="OBAMA_ModelIndicator.s:$(n)" spec="parameter.IntegerParameter" lower="0" upper="14">14</stateNode>
+                <parameter id="OBAMA_gammaShape.s:$(n)" spec="parameter.RealParameter" lower="0.1" name="stateNode">1.0</parameter>
+                <parameter id="OBAMA_ProportionInvariable.s:$(n)" spec="parameter.RealParameter" lower="0.0" name="stateNode" upper="1.0">0.1</parameter>
+                <stateNode id="OBAMA_hasInvariableSites.s:$(n)" spec="parameter.IntegerParameter">0</stateNode>
+                <stateNode id="OBAMA_hasGammaRates.s:$(n)" spec="parameter.IntegerParameter">0</stateNode>
+                <stateNode id="OBAMA_useExternalFreqs.s:$(n)" spec="parameter.BooleanParameter">false</stateNode>
+                <parameter id="frequencies_OBAMA.s:$(n)" spec="parameter.RealParameter" dimension="20" lower="0.0" name="stateNode" upper="1.0">0.05</parameter>
+
+            </plate>
+           
+          
+            <parameter id="traitBirthRate" spec="parameter.RealParameter" estimate="true" lower="0.0" name="stateNode">0.01</parameter>
+            <parameter id="aminoAcidSubstRate" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+            <parameter id="traitDeathRate" lower="0.0" name="stateNode">0.01</parameter>
+            <parameter id="BranchRates.Species" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+            <parameter id="SpeciesTreeRelaxedClockSD.Species" spec="parameter.RealParameter" lower="0.0" name="stateNode" upper="1.0">0.1</parameter>
+        </state>
+        <init id="SBI" spec="starbeast3.core.StarBeastStartState" method="random" birthRate="@speciationRate.t:Species" rootHeight="1.0" estimate="false" popMean="@popMean" speciesTree="@Tree.t:Species">
+            <plate var="n" range="data">
+                <gene idref="Tree.t:$(n)"/>
+            </plate>
+            <speciesTreePrior id="SpeciesTreePopSize.Species" spec="starbeast3.evolution.speciation.SpeciesTreePrior" bottomPopSize="@popSize" gammaParameter="@popMean" taxonset="@taxonsuperset" tree="@Tree.t:Species">
+                <populationModel id="speciesTreePopulationModel" spec="starbeast3.evolution.speciation.ConstantPopulations" populationSizes="@popSize" speciesTree="@Tree.t:Species"/>
+                <treePrior id="YuleModel.t:Species" spec="beast.base.evolution.speciation.YuleModel" birthDiffRate="@speciationRate.t:Species" tree="@Tree.t:Species"/>
+            </speciesTreePrior>
+
+            
+            <sharedRateModel id="branchRatesModel.Species" spec="starbeast3.evolution.branchratemodel.SharedSpeciesClockModel">
+                <branchRateModel id="relaxedClockModel.Species" spec="starbeast3.evolution.branchratemodel.UCRelaxedClockModelSB3" estimateRoot="true" realRates="@BranchRates.Species" stdev="@SpeciesTreeRelaxedClockSD.Species" tree="@Tree.t:Species">
+                    <parameter id="SpeciesTreeRelaxedClockRate.Species" spec="parameter.RealParameter" estimate="false" lower="0.0" name="clock.rate">1.0</parameter>
+                </branchRateModel>
+            </sharedRateModel>
+            
+            <!--
+            <sharedRateModel id="branchRatesModel.Species" spec="starbeast3.evolution.branchratemodel.SharedSpeciesClockModel">
+                <branchRateModel id="relaxedClockModel.Species" spec="starbeast3.evolution.branchratemodel.StrictClockModelSB3"  tree="@Tree.t:Species">
+                    <parameter id="SpeciesTreeRelaxedClockRate.Species" spec="parameter.RealParameter" estimate="false" lower="0.0" name="clock.rate">1.0</parameter>
+                </branchRateModel>
+            </sharedRateModel>
+        -->
+        </init>
+
+
+        <plate var="n" range="data">
+            <init id="birthModelInit.$(n)" spec="simba.CognateBirthModelInitialiser">
+                <tree idref="CognateTree.t:$(n)"/>
+                <birthTime idref="traitBirth.s:$(n)"/>
+
+            </init>
+        </plate>
+
+        <distribution id="posterior" spec="CompoundDistribution">
+            <distribution id="speciescoalescent" spec="CompoundDistribution">
+
+                    <distribution id="treePrior.t:data" spec="starbeast3.evolution.speciation.GeneTreeForSpeciesTreeDistribution" populationModel="@speciesTreePopulationModel" speciesTree="@Tree.t:Species" speciesTreePrior="@SpeciesTreePopSize.Species" tree="@Tree.t:data"/>
+
+            </distribution>
+            <distribution idref="SpeciesTreePopSize.Species"/>
+            <distribution id="prior" spec="CompoundDistribution">
+                <distribution idref="YuleModel.t:Species"/>
+
+
+                <prior id="traitDeathRatePrior" name="distribution" x="@traitDeathRate">
+                    <LogNormal meanInRealSpace="true" name="distr" M="0.01" S="1"/>
+                </prior>
+
+
+                <prior id="traitBirthRatePrior" name="distribution" x="@traitBirthRate">
+                    <LogNormal meanInRealSpace="true" name="distr" M="0.01" S="1"/>
+                </prior>
+
+
+
+                    <prior id="aminoAcidSubstRatePrior" name="distribution" x="@aminoAcidSubstRate">
+                        <LogNormal meanInRealSpace="true" name="distr">
+                            <M spec="Function$Constant" value="1.0"/>
+                            <S spec="Function$Constant" value="1"/>
+                        </LogNormal>
+                    </prior>
+
+
+                <plate var="n" range="data">
+                    <distribution id="OBAMA_PropInvariablePrior.s:$(n)" spec="bmodeltest.math.distributions.BMTPrior" count="@OBAMA_hasInvariableSites.s:$(n)" x="@OBAMA_ProportionInvariable.s:$(n)">
+                        <Beta name="distr">
+                            <alpha spec="Function$Constant" value="1.0"/>
+                            <beta spec="Function$Constant" value="4.0"/>
+                        </Beta>
+                    </distribution>
+
+
+
+
+                    <distribution id="OBAMA_GammaShapePrior.s:$(n)" spec="bmodeltest.math.distributions.BMTPrior" count="@OBAMA_hasGammaRates.s:$(n)" x="@OBAMA_gammaShape.s:$(n)">
+                        <Exponential name="distr">
+                            <mean spec="Function$Constant" value="1.0"/>
+                        </Exponential>
+                    </distribution>
+
+
+                    <prior id="ClockRatePrior.c:$(n)" name="distribution" x="@clockRate.c:$(n)">
+                        <LogNormal meanInRealSpace="true" name="distr">
+                            <M spec="Function$Constant" value="1.0"/>
+                            <S  spec="Function$Constant" value="0.5"/>
+                        </LogNormal>
+                    </prior>
+
+
+                    
+
+
+                    <prior id="TraitBirthPrior.c:$(n)" name="distribution" x="@traitBirth.s:$(n)">
+                        <Exponential mean="0.1" name="distr" />
+                    </prior>
+
+
+
+
+                    <prior id="OBAMA_freqsPrior.s:$(n)" name="distribution" x="@frequencies_OBAMA.s:$(n)">
+                        <distr spec="distribution.Dirichlet">
+                            <parameter spec="parameter.RealParameter" dimension="20" lower="0.0" name="alpha" upper="0.0">4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0 4.0</parameter>
+                        </distr>
+                    </prior>
+
+
+                </plate>
+
+
+                
+                <prior id="ucldStdevPrior.clock.Species" name="distribution" x="@SpeciesTreeRelaxedClockSD.Species">
+                    <Gamma id="Gamma.0" name="distr">
+                        <alpha id="Function$Constant.93" spec="Function$Constant" value="5.0"/>
+                        <beta id="Function$Constant.94" spec="Function$Constant" value="0.05"/>
+                    </Gamma>
+                </prior>
+
+                
+                
+                <prior id="popMean.prior" name="distribution" x="@popMean">
+                    <LogNormal id="LogNormalDistributionModel.127" meanInRealSpace="true" name="distr">
+                        <parameter id="RealParameter.720" spec="parameter.RealParameter" estimate="false" name="M">0.05</parameter>
+                        <parameter id="RealParameter.721" spec="parameter.RealParameter" estimate="false" lower="0.0" name="S" upper="5.0">0.2</parameter>
+                    </LogNormal>
+                </prior>
+                <prior id="speciationRatePrior.t:Species" name="distribution" x="@speciationRate.t:Species">
+                    <LogNormal  meanInRealSpace="true" name="distr" M="50" S="1" />
+                </prior>
+            </distribution>
+            <distribution id="vectorPrior" spec="CompoundDistribution">
+                <prior id="constPopSizesPrior.Species" name="distribution" x="@popSize">
+                    <InverseGamma id="popPriorDistr.InverseGamma" beta="@popMean" name="distr">
+                        <alpha id="Function$Constant.0" spec="Function$Constant" value="2.0"/>
+                    </InverseGamma>
+                </prior>
+                <prior id="FastRatePriorDistributionClock.Species" name="distribution" x="@BranchRates.Species">
+                    <LogNormal id="LogNormalDistributionModel.36" S="@SpeciesTreeRelaxedClockSD.Species" meanInRealSpace="true" name="distr">
+                        <M id="Function$Constant.95" spec="Function$Constant" value="1.0"/>
+                    </LogNormal>
+                </prior>
+            </distribution>
+
+
+            <distribution id="likelihood" spec="CompoundDistribution" useThreads="true">
+
+                <distribution id="StochasticDolloPoissonPrior.taxa" spec="simba.StochasticDolloPoissonPrior" lambda="@traitBirthRate" mu="@traitDeathRate" tree="@Tree.t:data">
+                    <!--<branchRateModel idref="branchRateModelCognate.c:taxa"  />-->
+                    <branchRateModel idref="branchRateModelSequence.c:data"/>
+                    <mutationRate idref="mutationRate.s:taxa"/>
+                </distribution>
+
+
+
+                <!-- Trait likelihood -->
+                <plate var="n" range="data">
+
+
+                      <distribution id="treeLikelihood.trait.$(n)" cognateTree="@CognateTree.t:$(n)" spec="simba.StochasticDolloTreeLikelihoodFast" mu="@traitDeathRate" birth="@traitBirth.s:$(n)" lambda="@traitBirthRate" rate="@mutationRate.s:taxa">
+                            <data idref="$(n).trait"/>
+
+                            <!--
+                            <branchRateModel id="branchRateModelCognate.c:$(n)" spec="simba.CognatePrunedTreeClock" clock.rate="1.0" sharedRateModel="@branchRatesModel.Species" cognateTree="@CognateTree.t:$(n)"/>
+                            -->
+
+                            
+                           <!--<branchRateModel idref="branchRateModelCognate.c:taxa"  />-->
+                    <branchRateModel idref="branchRateModelSequence.c:data"/>
+                            
+                      </distribution>
+
+                </plate>
+
+
+
+
+                
+                <!-- Sequence likelihood -->
+                <plate var="n" range="data">
+                    <distribution id="treeLikelihoodPruned.$(n)" spec="simba.PrunedTreeLikelihood" tree="@CognateTree.t:$(n)">
+
+                     
+                        <siteModel idref="OBAMA.s:$(n)" />
+                       
+                        <data idref="$(n)" />
+                        <!--<branchRateModel idref="branchRateModelCognate.c:taxa"  />-->
+                        <branchRateModel idref="branchRateModelSequence.c:data"/>
+                    </distribution>
+
+                 </plate>
+
+
+
+
+
+            
+            </distribution>
+        </distribution>
+        <operator id="Reheight.t:Species" spec="starbeast3.operators.NodeReheight2" taxonset="@taxonsuperset" tree="@Tree.t:Species" weight="30.0">
+            <plate var="n" range="data">
+                <gene idref="treePrior.t:$(n)"/>
+            </plate>
+        </operator>
+        <operator id="CoordinatedExponential.t:Species" spec="starbeast3.operators.CoordinatedExponential" speciesTree="@Tree.t:Species" weight="15.0">
+            <plate var="n" range="data">
+                <gene idref="treePrior.t:$(n)"/>
+            </plate>
+        </operator>
+        <operator id="CoordinatedUniform.t:Species" spec="starbeast3.operators.CoordinatedUniform" speciesTree="@Tree.t:Species" weight="30.0">
+            <plate var="n" range="data">
+                <gene idref="treePrior.t:$(n)"/>
+            </plate>
+        </operator>
+        <operator id="BactrianSubtreeSlide.t:Species" spec="kernel.BactrianSubtreeSlide" size="0.002" tree="@Tree.t:Species" weight="15.0"/>
+        <operator id="WilsonBalding.t:Species" spec="WilsonBalding" tree="@Tree.t:Species" weight="15.0"/>
+        <operator id="Wide.t:Species" spec="Exchange" isNarrow="false" tree="@Tree.t:Species" weight="15.0"/>
+        <operator id="Narrow.t:Species" spec="Exchange" tree="@Tree.t:Species" weight="15.0"/>
+        <operator id="CoordinatedExchange" spec="starbeast3.operators.CoordinatedExchangeRates" tree="@Tree.t:Species" weight="15.0">
+            <plate var="n" range="data">
+                <gene idref="treePrior.t:$(n)"/>
+            </plate>
+        </operator>
+
+        <operator id="UniformOperator.t:Species" spec="Uniform" tree="@Tree.t:Species" weight="3.0"/>
+        <operator id="TreeRootScaler.t:Species" spec="kernel.BactrianScaleOperator" rootOnly="true" scaleFactor="0.7" tree="@Tree.t:Species" upper="10.0" weight="3.0"/>
+        <operator id="BactrianNodeOperator.t:Species" spec="kernel.BactrianNodeOperator" tree="@Tree.t:Species" weight="3.0"/>
+        <operator id="TreeScaler.t:Species" spec="kernel.BactrianScaleOperator" scaleFactor="0.01" tree="@Tree.t:Species" upper="10.0" weight="50.0"/>
+        <operator id="updown.all" spec="operator.kernel.BactrianUpDownOperator" scaleFactor="0.75" weight="50.0">
+            <up idref="speciationRate.t:Species"/>
+            <down idref="Tree.t:Species"/>
+            <down idref="popMean"/>
+            <down idref="Tree.t:data"/>
+            <plate var="n" range="data">
+                <up idref="clockRate.c:$(n)"/>
+                <down idref="traitBirth.s:$(n)"/>
+            </plate>
+        </operator>
+
+
+
+
+        <operator id="clockAVMN" spec="kernel.AdaptableVarianceMultivariateNormalOperator" beta="0.05" burnin="500" initial="1000" weight="5">
+            <transformations spec="operator.kernel.Transform$LogTransform">
+                 <f idref="traitBirthRate"/>
+                 <f idref="traitDeathRate"/>
+                 <f idref="popMean"/>
+                 <f idref="speciationRate.t:Species"/>
+                 <f idref="Tree.t:data"/>
+                 
+                 <plate var="n" range="data">
+                    <f idref="traitBirth.s:$(n)"/>
+                 </plate>
+             
+            </transformations>
+        </operator>
+
+        <plate var="n" range="data">
+            <operator id="BactrianSubtreeSlide.t:$(n)" spec="kernel.BactrianSubtreeSlide" size="0.002" tree="@Tree.t:$(n)" weight="15.0"/>
+            <operator id="WilsonBalding.t:$(n)" spec="WilsonBalding" tree="@Tree.t:$(n)" weight="15.0"/>
+            <operator id="Wide.t:$(n)" spec="Exchange" isNarrow="false" tree="@Tree.t:$(n)" weight="15.0"/>
+            <operator id="Narrow.t:$(n)" spec="Exchange" tree="@Tree.t:$(n)" weight="300.0"/>
+            <operator id="UniformOperator.t:$(n)" spec="Uniform" tree="@Tree.t:$(n)" weight="3.0"/>
+            <operator id="TreeRootScaler.t:$(n)" spec="kernel.BactrianScaleOperator" rootOnly="true" scaleFactor="0.7" tree="@Tree.t:$(n)" upper="10.0" weight="3.0"/>
+            <operator id="BactrianNodeOperator.t:$(n)" spec="kernel.BactrianNodeOperator" tree="@Tree.t:$(n)" weight="3.0"/>
+        </plate>
+
+
+
+        <operator id="ParallelMCMCTreeOperator" spec="starbeast3.operators.ParallelMCMCTreeOperator" chainCoverage="0.2" learning="false" nregression="0" otherState="@state" runtime="1000.0" speciesTree="@Tree.t:Species" targetCPU="0.0" weight="1.0">
+            <plate var="n" range="data">
+                
+                
+                
+                 <distribution id="ParallelMCMCTreeOperatorLikelihood.$(n)" spec="starbeast3.operators.ParallelMCMCTreeOperatorTreeDistribution" geneprior="@treePrior.t:data" tree="@Tree.t:data" treelikelihood="@treeLikelihood.$(n)" />
+                
+                 
+                 <distribution id="CognateParallelLikelihood.$(n)" include="@traitBirth.s:$(n)" spec="starbeast3.operators.ParallelMCMCTreeOperatorTreeDistribution" treelikelihood="@treeLikelihood.trait.$(n)" geneprior="@treePrior.t:data" tree="@Tree.t:data" dist="@StochasticDolloPoissonPrior.taxa"/>
+    
+            </plate>
+
+            <exclude idref="traitBirthRate"/>
+            <exclude idref="traitDeathRate"/>
+            <exclude idref="aminoAcidSubstRate"/>
+
+
+
+            <schedule id="operatorSchedule" spec="starbeast3.core.OperatorScheduleRecalculator">
+                <subschedule id="operatorSubschedule" spec="OperatorSchedule" operatorPattern="^ParallelMCMCTreeOperator$" weight="0.0" weightIsPercentage="true"/>
+            </schedule>
+        </operator>
+
+        
+        <operator id="PopSizeGibbsSampler.Species" spec="starbeast3.operators.PopSizeGibbsSampler" gammaprior="@popPriorDistr.InverseGamma" popSizes="@popSize" weight="10.0">
+            <plate var="n" range="data">
+                <gene idref="treePrior.t:$(n)"/>
+            </plate>
+        </operator>
+    
+
+            <operator id="Scale.popmean" spec="kernel.BactrianScaleOperator" parameter="@popMean" upper="10.0" weight="5.0"/>
+            <operator id="SampleFromPriorOperator.popmean" spec="orc.operators.SampleFromPriorOperator" parameter="@popMean" prior2="@popMean.prior" weight="5.0"/>
+            <operator id="Scale.YuleModel" spec="kernel.BactrianScaleOperator" parameter="@speciationRate.t:Species" upper="10.0" weight="5.0"/>
+            <operator id="SampleFromPriorOperator.YuleModel" spec="orc.operators.SampleFromPriorOperator" parameter="@speciationRate.t:Species" prior2="@speciationRatePrior.t:Species" weight="5.0"/>
+
+         <operator id="aminoAcidSubstRateScaler" spec="kernel.BactrianScaleOperator" parameter="@aminoAcidSubstRate" upper="10.0" weight="0.0"/>
+
+        <plate var="n" range="data">
+
+           
+            <operator id="clockRateScaler.c:$(n)" spec="kernel.BactrianScaleOperator" parameter="@clockRate.c:$(n)" upper="10.0" weight="1.0"/>
+            
+
+         <operator id="OBAMA_FrequenciesAVMNOperator.s:$(n)" spec="kernel.AdaptableVarianceMultivariateNormalOperator" beta="0.05" burnin="500" initial="1000" weight="0.05">
+                <transformations id="LogConstrainedSumTransform.s:$(n)" spec="operator.kernel.Transform$LogConstrainedSumTransform">
+                    <f idref="frequencies_OBAMA.s:$(n)"/>
+                </transformations>
+            </operator>
+
+            <operator id="OBAMA_FreqsFlipOperator.s:$(n)" spec="operator.BitFlipOperator" parameter="@OBAMA_useExternalFreqs.s:$(n)" weight="0.1"/>
+
+
+          
+            
+            <operator id="OBAMA_ModelIndicatorUniformOperator.s:$(n)" spec="operator.UniformOperator" parameter="@OBAMA_ModelIndicator.s:$(n)" weight="3.0"/>
+         
+            
+            <operator id="Scale.birth.$(n)" spec="kernel.BactrianScaleOperator" parameter="@traitBirth.s:$(n)" scaleFactor="0.5" weight="0.0"/>
+        
+        </plate>
+
+        
+         <operator id="ConstantDistanceOperatorSpeciesTree:Species" spec="starbeast3.operators.ConstantDistanceOperatorSpeciesTree" clock="@relaxedClockModel.Species" proportionalToBranchLength="true" tree="@Tree.t:Species" twindowSize="0.1" weight="50.0">
+                <plate var="n" range="data">
+                    <gene idref="treePrior.t:$(n)"/>
+                </plate>
+            </operator>
+
+         <operator id="Scale.branchRates.Species" spec="kernel.BactrianScaleOperator" parameter="@BranchRates.Species" upper="10.0" weight="10.0"/>
+        <operator id="UcldStdevScale.clock.Species" spec="kernel.BactrianScaleOperator" parameter="@SpeciesTreeRelaxedClockSD.Species" scaleFactor="0.5" upper="10.0" weight="5.0"/>
+        
+        <operator id="Scale.traitDeathRate" spec="beast.base.evolution.operator.kernel.BactrianScaleOperator" parameter="@traitDeathRate" scaleFactor="0.05" weight="5.0"/>
+        <operator id="Scale.traitBirthRate" spec="beast.base.evolution.operator.kernel.BactrianScaleOperator" parameter="@traitBirthRate" scaleFactor="0.05" weight="5.0"/>
+       
+
+        <logger id="tracelog" spec="Logger" fileName="starbeast3.log" logEvery="10000" model="@posterior" sort="smart">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="vectorPrior"/>
+            <log idref="speciescoalescent"/>
+            <log id="TreeStat.Species" spec="beast.base.evolution.tree.TreeStatLogger" tree="@Tree.t:Species"/>
+            <log idref="YuleModel.t:Species"/>
+            <log idref="popMean"/>
+            <log idref="popSize"/>
+
+            <log idref="traitBirthRate"/>
+            <log idref="traitDeathRate"/>
+            <log idref="aminoAcidSubstRate"/>
+
+            <log id="TreeStat.t:$(n)" spec="beast.base.evolution.tree.TreeStatLogger" tree="@Tree.t:data"/>
+
+            <log idref="StochasticDolloPoissonPrior.taxa"/>
+            <log idref="treePrior.t:data"/>
+
+            <plate var="n" range="data">
+               
+                <log idref="traitBirth.s:$(n)"/>
+                <log idref="treeLikelihood.$(n)"/>
+                <log idref="treeLikelihood.trait.$(n)"/>
+  
+                <log idref="clockRate.c:$(n)"/>
+                
+
+
+                <log idref="OBAMA_ModelIndicator.s:$(n)"/>
+                <log idref="OBAMA_gammaShape.s:$(n)"/>
+                <log idref="OBAMA_ProportionInvariable.s:$(n)"/>
+                <log idref="OBAMA_hasGammaRates.s:$(n)"/>
+                <log idref="OBAMA_hasInvariableSites.s:$(n)"/>
+                <log id="OBAMA_ActivePropInvariable.s:$(n)" spec="bmodeltest.evolution.substitutionmodel.ActiveLogger" mask="@OBAMA_hasInvariableSites.s:$(n)" parameter="@OBAMA_ProportionInvariable.s:$(n)"/>
+                <log id="OBAMA_ActiveGammaShape.s:$(n)" spec="bmodeltest.evolution.substitutionmodel.ActiveLogger" mask="@OBAMA_hasGammaRates.s:$(n)" parameter="@OBAMA_gammaShape.s:$(n)"/>
+                <log idref="OBAMA_useExternalFreqs.s:$(n)"/>
+                <log idref="frequencies_OBAMA.s:$(n)"/>
+
+
+            </plate>
+            
+            
+            <log idref="speciationRate.t:Species"/>
+
+
+            <log id="RateStatLogger.Species" spec="beast.base.evolution.RateStatistic" branchratemodel="@relaxedClockModel.Species" tree="@Tree.t:Species"/>
+            <log idref="SpeciesTreeRelaxedClockSD.Species"/>
+        </logger>
+        <logger id="speciesTreeLogger" spec="Logger" fileName="protein.trees" logEvery="1" mode="tree">
+            <log id="SpeciesTreeLoggerX" spec="starbeast3.core.SpeciesTreeLogger" popSize="@popSize" speciesTreePrior="@SpeciesTreePopSize.Species" tree="@Tree.t:Species">
+                <treetop id="treeTopFinder" spec="beast.base.evolution.speciation.TreeTopFinder">
+                    <plate var="n" range="data">
+                        <tree idref="Tree.t:$(n)"/>
+                    </plate>
+                </treetop>
+               <!-- <metadata idref="BranchRates.Species"/>-->
+            </log>
+        </logger>
+        <logger id="screenlog" spec="Logger" logEvery="1000">
+            <log idref="treeLikelihoodPruned.data"/>
+            <log idref="SpeciesTreeRelaxedClockSD.Species"/>
+            <log idref="BranchRates.Species" />
+
+        </logger>
+
+        <plate var="n" range="data">
+
+            <!--
+            <logger id="treelog.t:$(n)" spec="Logger" fileName="$(n).trees" logEvery="10000" mode="tree">
+                <log id="TreeWithMetaDataLogger.t:$(n)" spec="beast.base.evolution.TreeWithMetaDataLogger" tree="@Tree.t:$(n)"/>
+            </logger>
+            -->
+
+            <logger id="cognateTreelog.t:$(n)" spec="Logger" fileName="$(n).trees" logEvery="1" mode="tree" ascii="false">
+                <log id="CognateTreeWithMetaDataLogger.t:$(n)" spec="simba.CognatePrunedTreeLogger" tree="@CognateTree.t:$(n)" data="@$(n).trait"/>
+            </logger>
+
+
+
+        </plate>
+        
+        <operatorschedule idref="operatorSchedule"/>
+    </run>
+
+</beast>
