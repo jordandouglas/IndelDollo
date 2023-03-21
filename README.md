@@ -1,7 +1,7 @@
-# SIMBA 
+# IndelDollo 
 
 
-Sequence insertion module Bayesian analysis.
+Insertions and deletions through the stochastic dollo process
 
 
 An intuitive total-evidence method for combining sequence and structural information into a phylogenetic analysis.

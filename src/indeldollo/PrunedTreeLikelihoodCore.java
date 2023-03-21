@@ -1,4 +1,4 @@
-package simba;
+package indeldollo;
 
 import java.util.Arrays;
 

@@ -23,7 +23,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-package simba;
+package indeldollo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

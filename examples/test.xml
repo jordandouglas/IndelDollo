@@ -154,7 +154,7 @@
                     
 
                 <parameter id="traitBirth.s:$(n)" spec="parameter.RealParameter" estimate="true" lower="0.0" name="stateNode">1.0</parameter>
-                <stateNode id="CognateTree.t:$(n)" spec="simba.CognatePrunedTree" tree="@Tree.t:data" estimate="false" birth="@traitBirth.s:$(n)">
+                <stateNode id="CognateTree.t:$(n)" spec="indeldollo.CognatePrunedTree" tree="@Tree.t:data" estimate="false" birth="@traitBirth.s:$(n)">
                     <data idref="$(n).trait"/>
                 </stateNode>
 
@@ -202,7 +202,7 @@
 
 
         <plate var="n" range="data">
-            <init id="birthModelInit.$(n)" spec="simba.CognateBirthModelInitialiser">
+            <init id="birthModelInit.$(n)" spec="indeldollo.CognateBirthModelInitialiser">
                 <tree idref="CognateTree.t:$(n)"/>
                 <birthTime idref="traitBirth.s:$(n)"/>
 
@@ -321,7 +321,7 @@
 
             <distribution id="likelihood" spec="CompoundDistribution" useThreads="true">
 
-                <distribution id="StochasticDolloPoissonPrior.taxa" spec="simba.StochasticDolloPoissonPrior" lambda="@traitBirthRate" mu="@traitDeathRate" tree="@Tree.t:data">
+                <distribution id="StochasticDolloPoissonPrior.taxa" spec="indeldollo.StochasticDolloPoissonPrior" lambda="@traitBirthRate" mu="@traitDeathRate" tree="@Tree.t:data">
                     <!--<branchRateModel idref="branchRateModelCognate.c:taxa"  />-->
                     <branchRateModel idref="branchRateModelSequence.c:data"/>
                     <mutationRate idref="mutationRate.s:taxa"/>
@@ -333,11 +333,11 @@
                 <plate var="n" range="data">
 
 
-                      <distribution id="treeLikelihood.trait.$(n)" cognateTree="@CognateTree.t:$(n)" spec="simba.StochasticDolloTreeLikelihoodFast" mu="@traitDeathRate" birth="@traitBirth.s:$(n)" lambda="@traitBirthRate" rate="@mutationRate.s:taxa">
+                      <distribution id="treeLikelihood.trait.$(n)" cognateTree="@CognateTree.t:$(n)" spec="indeldollo.StochasticDolloTreeLikelihoodFast" mu="@traitDeathRate" birth="@traitBirth.s:$(n)" lambda="@traitBirthRate" rate="@mutationRate.s:taxa">
                             <data idref="$(n).trait"/>
 
                             <!--
-                            <branchRateModel id="branchRateModelCognate.c:$(n)" spec="simba.CognatePrunedTreeClock" clock.rate="1.0" sharedRateModel="@branchRatesModel.Species" cognateTree="@CognateTree.t:$(n)"/>
+                            <branchRateModel id="branchRateModelCognate.c:$(n)" spec="indeldollo.CognatePrunedTreeClock" clock.rate="1.0" sharedRateModel="@branchRatesModel.Species" cognateTree="@CognateTree.t:$(n)"/>
                             -->
 
                             
@@ -354,7 +354,7 @@
                 
                 <!-- Sequence likelihood -->
                 <plate var="n" range="data">
-                    <distribution id="treeLikelihoodPruned.$(n)" spec="simba.PrunedTreeLikelihood" tree="@CognateTree.t:$(n)">
+                    <distribution id="treeLikelihoodPruned.$(n)" spec="indeldollo.PrunedTreeLikelihood" tree="@CognateTree.t:$(n)">
 
                      
                         <siteModel idref="OBAMA.s:$(n)" />
@@ -595,7 +595,7 @@
             -->
 
             <logger id="cognateTreelog.t:$(n)" spec="Logger" fileName="$(n).trees" logEvery="1" mode="tree" ascii="false">
-                <log id="CognateTreeWithMetaDataLogger.t:$(n)" spec="simba.CognatePrunedTreeLogger" tree="@CognateTree.t:$(n)" data="@$(n).trait"/>
+                <log id="CognateTreeWithMetaDataLogger.t:$(n)" spec="indeldollo.CognatePrunedTreeLogger" tree="@CognateTree.t:$(n)" data="@$(n).trait"/>
             </logger>
 
 

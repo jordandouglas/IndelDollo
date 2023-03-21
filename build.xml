@@ -1,18 +1,18 @@
-<!-- Build SIMBA. It is also used by Hudson SIMBA project. JUnit test is available for this build. -->
-<project basedir="." default="addon" name="BUILD_SIMBA">
+<!-- Build IndelDollo. It is also used by Hudson IndelDollo project. JUnit test is available for this build. -->
+<project basedir="." default="addon" name="BUILD_IndelDollo">
 	<description>
-	    Build SIMBA.
-            Also used by Hudson SIMBA project.
+	    Build IndelDollo.
+            Also used by Hudson IndelDollo project.
 	    JUnit test is available for this build.
-	    $Id: build_SIMBA.xml $
+	    $Id: build_IndelDollo.xml $
 	</description>
 
 	<!-- set global properties for this build -->
-	<property name="srcSIMBA" location="src" />
-	<property name="buildSIMBA" location="build" />
-	<property name="libSIMBA" location="lib" />
+	<property name="srcIndelDollo" location="src" />
+	<property name="buildIndelDollo" location="build" />
+	<property name="libIndelDollo" location="lib" />
 	<property name="release_dir" value="release" />
-	<property name="distSIMBA" location="${buildSIMBA}/dist" />
+	<property name="distIndelDollo" location="${buildIndelDollo}/dist" />
 	<property name="beast2path" location="../beast2" />
 	<property name="libBeast2" location="${beast2path}/lib" />
 	<property name="srcBeast2" location="${beast2path}/src" />
@@ -23,10 +23,10 @@
     <import file="${beast2path}/build.xml" />
 
 	<property name="main_class_BEAST" value="beast.app.BeastMCMC" />
-	<property name="report" value="${buildSIMBA}/junitreport"/>
+	<property name="report" value="${buildIndelDollo}/junitreport"/>
 
 	<path id="classpath">
-        <pathelement path="${buildSIMBA}"/>
+        <pathelement path="${buildIndelDollo}"/>
 		<fileset dir="${libBeast2}" includes="junit/junit-platform-console-standalone-1.8.2.jar"/>
 	    <fileset dir="${libBeast2}" includes="commons-math3-3.6.1.jar"/>
         <pathelement path="${beast2classpath}"/>
@@ -36,32 +36,32 @@
 	</path>
 
 	<!-- start -->
-	<target name="initSIMBA">
+	<target name="initIndelDollo">
 		<echo message="${ant.project.name}: ${ant.file}" />
 	</target>
 
-	<target name="cleanSIMBA">
-    	<delete dir="${buildSIMBA}" />
+	<target name="cleanIndelDollo">
+    	<delete dir="${buildIndelDollo}" />
 	</target>
 
 	<!-- clean previous build, and then compile Java source code, and Juint test -->
-	<target name="build_all_SIMBA" depends="cleanSIMBA,compile-allSIMBA,junitSIMBA"
+	<target name="build_all_IndelDollo" depends="cleanIndelDollo,compile-allIndelDollo,junitIndelDollo"
         description="Clean and Build all run-time stuff">
 	</target>
 
 	<!-- clean previous build, compile Java source code, and Junit test, and make the beast.jar and beauti.jar -->
-	<target name="build_jar_all_SIMBA" depends="cleanSIMBA,compile-allSIMBA,junitSIMBA,dist_all_SIMBA"
+	<target name="build_jar_all_IndelDollo" depends="cleanIndelDollo,compile-allIndelDollo,junitIndelDollo,dist_all_IndelDollo"
         description="Clean and Build all run-time stuff">
 	</target>
 
 
-	<!-- No JUnit Test, clean previous build, compile Java source code, and make the SIMBA.jar and beauti.jar -->
-	<target name="build_jar_all_SIMBA_NoJUnitTest" depends="cleanSIMBA,compile-allSIMBA,dist_all_SIMBA"
+	<!-- No JUnit Test, clean previous build, compile Java source code, and make the IndelDollo.jar and beauti.jar -->
+	<target name="build_jar_all_IndelDollo_NoJUnitTest" depends="cleanIndelDollo,compile-allIndelDollo,dist_all_IndelDollo"
         description="Clean and Build all run-time stuff">
 	</target>
 
 	<!-- compile Java source code -->
-	<target name="compile-allSIMBA" depends="initSIMBA,compile-all">
+	<target name="compile-allIndelDollo" depends="initIndelDollo,compile-all">
 
 
 	    <!-- Capture the path as a delimited property using the refid attribute -->
@@ -69,10 +69,10 @@
 	    <!-- Emit the property to the ant console -->
 	    <echo message="Classpath = ${myclasspath}"/>
 
-		<mkdir dir="${buildSIMBA}" />
+		<mkdir dir="${buildIndelDollo}" />
 
-		<!-- Compile the java code from ${srcSIMBA} into ${buildSIMBA} /bin -->
-		<javac srcdir="${srcSIMBA}" destdir="${buildSIMBA}" classpathref="classpath"
+		<!-- Compile the java code from ${srcIndelDollo} into ${buildIndelDollo} /bin -->
+		<javac srcdir="${srcIndelDollo}" destdir="${buildIndelDollo}" classpathref="classpath"
 		       fork="true"
 		       memoryinitialsize="256m"
 		       memorymaximumsize="256m"
@@ -86,17 +86,17 @@
 	</target>
 
 	<!-- make the beast.jar and beauti.jar -->
-	<target name="dist_all_SIMBA" depends="compile-allSIMBA" description="create SIMBA jar">
+	<target name="dist_all_IndelDollo" depends="compile-allIndelDollo" description="create IndelDollo jar">
 		<!-- Create the distribution directory -->
-		<mkdir dir="${distSIMBA}" />
+		<mkdir dir="${distIndelDollo}" />
 
-		<!-- Put everything in ${buildSIMBA} into the beast.jar file -->
-		<jar jarfile="${distSIMBA}/SIMBA.jar">
+		<!-- Put everything in ${buildIndelDollo} into the beast.jar file -->
+		<jar jarfile="${distIndelDollo}/IndelDollo.jar">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Main-Class" value="${main_class_BEAST}" />
 			</manifest>
-			<fileset dir="${buildSIMBA}">
+			<fileset dir="${buildIndelDollo}">
 				<include name="**/*.class" />
 			</fileset>
 			<fileset dir="${beast2classpath}">
@@ -107,16 +107,16 @@
 				<include name="org/**/*.class" />
 			</fileset>
 		</jar>
-		<jar jarfile="${distSIMBA}/SIMBA.src.jar">
-			<fileset dir="${srcSIMBA}">
+		<jar jarfile="${distIndelDollo}/IndelDollo.src.jar">
+			<fileset dir="${srcIndelDollo}">
 				<include name="**/*.java" />
 			</fileset>
         </jar>
-		<jar jarfile="${distSIMBA}/SIMBA.addon.jar">
+		<jar jarfile="${distIndelDollo}/IndelDollo.addon.jar">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 			</manifest>
-			<fileset dir="${buildSIMBA}">
+			<fileset dir="${buildIndelDollo}">
 				<include name="**/*.class" />
 				<include name="**/*.properties" />
 			</fileset>
@@ -124,24 +124,24 @@
 	</target>
 
 	<!-- run beast.jar -->
-	<target name="run_SIMBA">
-		<java jar="${distSIMBA}/SIMBA.jar" fork="true" />
+	<target name="run_IndelDollo">
+		<java jar="${distIndelDollo}/IndelDollo.jar" fork="true" />
 	</target>
 
 
 	<!-- JUnit test -->
-	<target name="junitSIMBA">
+	<target name="junitIndelDollo">
 		<mkdir dir="${report}" />
 		<junit printsummary="yes"> <!--showoutput='yes'-->
 			<classpath>
 				<path refid="classpath" />
-				<path location="${buildSIMBA}" />
+				<path location="${buildIndelDollo}" />
 			</classpath>
 
 			<formatter type="xml" />
 
 			<batchtest fork="yes" todir="${report}">
-				<fileset dir="${srcSIMBA}">
+				<fileset dir="${srcIndelDollo}">
                     <include name="test/**/*Test.java"/>
 				</fileset>
 				<fileset dir="${srcBeast2}">
@@ -163,8 +163,8 @@
 
 
 	<target name="addon"
-	        depends="build_jar_all_SIMBA_NoJUnitTest"
-	        description="release BEAST 2 add-on version of SIMBA">
+	        depends="build_jar_all_IndelDollo_NoJUnitTest"
+	        description="release BEAST 2 add-on version of IndelDollo">
 
 		<delete dir="${Add_on_dir}" />
 		<!-- Create the release directory -->
@@ -180,16 +180,16 @@
 			<fileset dir="examples" includes="*.xml"/>
 		</copy>
 		<copy todir="${Add_on_dir}/lib">
-			<fileset dir="${distSIMBA}" includes="SIMBA.addon.jar" />
+			<fileset dir="${distIndelDollo}" includes="IndelDollo.addon.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}">
-			<fileset dir="${distSIMBA}" includes="SIMBA.src.jar" />
+			<fileset dir="${distIndelDollo}" includes="IndelDollo.src.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}/fxtemplates">
 			<fileset file="fxtemplates/*.xml" />
 		</copy>
 
-		<jar jarfile="${distSIMBA}/SIMBA.addon.v${version}.zip">
+		<jar jarfile="${distIndelDollo}/IndelDollo.addon.v${version}.zip">
 			<fileset dir="${Add_on_dir}">
 				<include name="**/*" />
 			</fileset>
