@@ -2,6 +2,17 @@
 
 	<depends on='BEAST.base' atleast='2.7.3'/>
 	<depends on='BEAST.app' atleast='2.7.3'/>
+
+
+
+  <!-- for analysing pruned trees -->
+  <packageapp description="PrunedTreeAnnotator"
+              class="indeldollo.tools.PrunedTreeAnnotator"
+              args=""
+            />
+
+
+    
     <service type="beast.base.core.BEASTInterface">
 
         <provider classname="indeldollo.PrunedTreeLikelihood"/>
