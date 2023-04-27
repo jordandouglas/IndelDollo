@@ -184,12 +184,20 @@ public class StochasticDolloTreeLikelihoodFast extends GenericTreeLikelihood {
 		// Mean birth rate (weighted by branch lengths)
         double totalWeightedRate = 0.0;
         double totalTreeLength = 0.0;
-        for (Node node : root.getAllChildNodesAndSelf()) {
-        	double rate = branchRateModel.getRateForBranch(node);
-        	double length = node == root ? (birthTime - node.getHeight()) : node.getLength();
+        if (root.isLeaf()) {
+        	double rate = branchRateModel.getRateForBranch(root);
+        	double length = birthTime - root.getHeight();
             totalWeightedRate += rate * length;
             totalTreeLength += length;
+        }else {
+        	for (Node node : root.getAllChildNodesAndSelf()) {
+            	double rate = branchRateModel.getRateForBranch(node);
+            	double length = node == root ? (birthTime - node.getHeight()) : node.getLength();
+                totalWeightedRate += rate * length;
+                totalTreeLength += length;
+            }
         }
+        
         double meanBranchRate = totalWeightedRate/totalTreeLength;
         double meanBirthRate = lambda * mutationRate * meanBranchRate;
         
