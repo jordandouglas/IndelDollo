@@ -48,7 +48,7 @@ The pruned trees in any given log file may have differing taxonsets. This stumps
 To summarise a posterior distribution of pruned trees, use the PrunedTreeAnnotator tool in IndelDollo:
 
 ```
-	path/to/beast/bin/applauncher PrunedTreeAnnotator -burnin 10 -trees in.trees -out mcc.tree
+path/to/beast/bin/applauncher PrunedTreeAnnotator -burnin 10 -trees in.trees -out mcc.tree
 ``` 
 
 This method first finds the most commonly occurring taxonset, and then finds the maximum clade credibility (mcc) tree among the trees which share that taxonset.
