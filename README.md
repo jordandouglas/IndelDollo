@@ -16,6 +16,27 @@ BEAST 2 implementation of a stochastic dollo model where sequence elements are a
 
 
 
+## Installation instructions
+
+
+This package requires BEAST 2.7 or newer
+
+1. Launch BEAUti
+2. Click on File -> Manage Packages
+3. Install IndelDollo. If IndelDollo is not in the list of packages, you may need to add an extra package repository as follows:
+
+- click the packager repositories button. A dialog pops up.
+- click the Add URL button. A dialog is shown where you can enter https://raw.githubusercontent.com/CompEvol/CBAN/master/packages-extra-2.7.xml
+- click the OK button. There should be an extra entry in the list.
+- click Done
+- After a short delay, IndelDollo should appear in the list of packages.
+
+
+
+## Running IndelDollo
+
+
+Please see the examples/ folder for working XML files. At this stage, IndelDollo analyses cannot be generated using BEAUti
 
 
 
