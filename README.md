@@ -1,13 +1,13 @@
 # IndelDollo 
 
 
-Insertions and deletions through a stochastic Dollo process. Package is still under development and has not yet been published.
+An intuitive total-evidence method for combining sequence and structural information in a phylogenetic analysis. This package is still in pre-release and has not yet been published.
 
 
-An intuitive total-evidence method for combining sequence and structural information in a phylogenetic analysis.
 
 
-BEAST 2 implementation of a stochastic dollo model where sequence elements are acquired with an acquisition rate, and then mutate down a tree under standard substitution models. The elements can be irreversibly deleted with a loss rate.
+BEAST 2 implementation of a stochastic Dollo model where sequence elements are acquired with an acquisition rate, and then mutate down a tree under standard substitution models. The elements can be irreversibly deleted with a loss rate. 
+This model is suitable for biological and linguistic data, and was adapated from the stochastic Dollo model by Nicholls and Gray 2008.
 
 
 
@@ -54,4 +54,6 @@ path/to/beast/bin/applauncher PrunedTreeAnnotator -burnin 10 -trees in.trees -ou
 This method first finds the most commonly occurring taxonset, and then finds the maximum clade credibility (mcc) tree among the trees which share that taxonset.
 
 
+## References
 
+Nicholls, Geoff K., and Russell D. Gray. "Dated ancestral trees from binary trait data and their application to the diversification of languages." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 70.3 (2008): 545-566.
