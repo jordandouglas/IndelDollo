@@ -36,9 +36,22 @@ This package requires BEAST 2.7 or newer
 ## Running IndelDollo
 
 
-Please see the examples/ folder for working XML files. At this stage, IndelDollo analyses cannot be generated using BEAUti
+Please see the examples/ folder for working XML files. At this stage, IndelDollo analyses cannot be generated using BEAUti.
 
 
+
+
+## Postprocessing
+
+
+The pruned trees in any given log file may have differing taxonsets. This stumps most of the tree parsers in BEAST2. 
+To summarise a posterior distribution of pruned trees, use the PrunedTreeAnnotator tool in IndelDollo:
+
+```
+	path/to/beast/bin/applauncher PrunedTreeAnnotator -burnin 10 -trees in.trees -out mcc.tree
+``` 
+
+This method first finds the most commonly occurring taxonset, and then finds the maximum clade credibility (mcc) tree among the trees which share that taxonset.
 
 
 
