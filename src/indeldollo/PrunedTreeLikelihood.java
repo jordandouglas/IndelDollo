@@ -91,7 +91,8 @@ public class PrunedTreeLikelihood extends TreeLikelihood {
         m_branchLengths = new double[nodeCount];
         storedBranchLengths = new double[nodeCount];
 
-        int stateCount = dataInput.get().getMaxStateCount();
+        //int stateCount = dataInput.get().getMaxStateCount();
+        int stateCount = dataInput.get().getDataType().getStateCount();
         int patterns = dataInput.get().getPatternCount();
         likelihoodCore = createLikelihoodCore(stateCount);
 
