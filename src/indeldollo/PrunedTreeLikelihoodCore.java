@@ -101,8 +101,11 @@ public class PrunedTreeLikelihoodCore extends BeerLikelihoodCore {
             double sum = 0.0;
             for (int i = 0; i < nrOfStates; i++) {
 
-            	//sum += frequencies[i] * partials[v];
-                sum += frequencies[i] * (hasOrigin ? this.patternLogLikelihoodsOrigin[v] : 1);
+		if (!hasOrigin){
+			sum += frequencies[i] * partials[v];
+		}else{
+			sum += frequencies[i] * this.patternLogLikelihoodsOrigin[v];
+		}
                 v++;
             }
             outLogLikelihoods[k] = Math.log(sum) + getLogScalingFactor(k);
