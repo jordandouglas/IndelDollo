@@ -11,6 +11,12 @@
               args=""
             />
 
+  <!-- useful for reconstructing source trees from pruned trees: may be removed -->
+  <packageapp description="SourceTreeFromPrunedTrees"
+              class="indeldollo.tools.SourceTreeFromPrunedTrees"
+              args=""
+            />
+
 
     
     <service type="beast.base.core.BEASTInterface">

@@ -148,6 +148,18 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 		
 
 		List<Node> prunedLeafs = node.getAllLeafNodes();
+		if (prunedLeafs.size() == sourceTree.getLeafNodeCount()) {
+			double h = sourceTree.getRoot().getHeight();
+			if (h >= ROOT_HEIGHT) {
+				sourceTree.getRoot().setHeight(node.getHeight());
+			} else {
+				if (Math.abs(h - node.getHeight()) > 1e-6) {
+					Log.warning("Inconsistent root heights in pruned trees " + h + " " + node.getHeight());
+				}
+			}
+			return;
+		}
+		
 		List<Node> leafs = new ArrayList<>();
 		Node [] nodes = sourceTree.getNodesAsArray();
 		for (Node n : prunedLeafs) {
@@ -161,20 +173,11 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 			}
 		}
 		
-		if (leafs.size() < 2) {
-			int h = 3;
-			h++;
-		}
 		
 		// find nodes to merge in target tree
 		Node mrca = getMRCA(sourceTree, leafs);
 		if (mrca.getHeight() >= ROOT_HEIGHT) {
 			// we need to add new node to tree
-			if (subRoot.size() != 2) {
-				int h = 3;
-				getMRCA(sourceTree, leafs);
-				h++;
-			}
 			Node [] subRootArray = subRoot.toArray(new Node[] {});
 			Node left = subRootArray[0];
 			Node right = subRootArray[1];
