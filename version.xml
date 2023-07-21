@@ -20,6 +20,7 @@
         <provider classname="indeldollo.CognatePrunedTree"/>
         <provider classname="indeldollo.CognatePrunedTreeData"/>
         <provider classname="indeldollo.CognatePrunedTreeLogger"/>
+        <provider classname="indeldollo.DistanceFromRootLogger"/>
         <provider classname="indeldollo.CognateBirthLogger"/>
         <provider classname="indeldollo.CognateBirthModelInitialiser"/>
         <provider classname="indeldollo.StochasticDolloPoissonPrior"/>
