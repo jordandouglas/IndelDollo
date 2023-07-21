@@ -1,30 +1,30 @@
 package indeldollo.tools;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Input.Validate;
+import beast.base.core.Log;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.Tree;
 import beast.base.inference.Runnable;
+import beast.base.parser.NexusParser;
 import beastfx.app.tools.Application;
 import beastfx.app.util.OutFile;
 import beastfx.app.util.TreeFile;
 import indeldollo.util.PrunedTreeSet;
 
-@Description("Reconstruct source tree from set of pruned trees")
+@Description("Reconstruct source tree set from set of pruned tree sets")
 public class SourceTreeFromPrunedTrees extends Runnable {
 	final public Input<List<TreeFile>> treesInput = new Input<>("tree", "list of pruned tree files", new ArrayList<>(), Validate.REQUIRED);
 	final public Input<OutFile> outputInput = new Input<>("out","output file. Print to stdout if not specified");
+	final public Input<Double> rootheightInput = new Input<>("rootheight", "minimum height of the root -- used when pruned tree have no information about root height", 2.0);
 	
-	final static double ROOT_HEIGHT = 1e10;
+	double ROOT_HEIGHT;
 	
 	@Override
 	public void initAndValidate() {
@@ -32,6 +32,7 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 
 	@Override
 	public void run() throws Exception {
+		ROOT_HEIGHT = rootheightInput.get();
 		
         // Open trees
         List<PrunedTreeSet> treeSets = new ArrayList<>();
@@ -47,30 +48,26 @@ public class SourceTreeFromPrunedTrees extends Runnable {
         }
         
         // initialise output log
-		Tree tree = treeSets.get(0).next();
 		PrintStream out = System.out;
 		if (outputInput.get() != null) {
 			out = new PrintStream(outputInput.get());
 		}
-		tree.init(out);
-		treeSets.get(0).reset();
+
+		// recover taxon set
+		TaxonSet taxonset = getTaxonSet();
+		Tree sourceTree = new Tree();
+		sourceTree.initByName("taxonset", taxonset);
+		sourceTree.init(out);
 		
-        // recover taxon set
-		List<Taxon> taxa = new ArrayList<>();
-		for (int i = 0; i < tree.getLeafNodeCount(); i++) {
-			String taxon = tree.getNode(i).getID();
-			taxa.add(new Taxon(taxon));
-		}
-		TaxonSet taxonset = new TaxonSet(taxa);
 		
 		// merge pruned trees into source tree
 		long k = 0;
         while (treeSets.get(0).hasNext()) {
         	// start with a caterpillar tree
-    		Tree sourceTree = new Tree();
+    		sourceTree = new Tree();
     		sourceTree.initByName("taxonset", taxonset);
     		for (int i = sourceTree.getLeafNodeCount(); i < sourceTree.getNodeCount(); i++) {
-    			sourceTree.getNode(i).setHeight(ROOT_HEIGHT+i);
+    			sourceTree.getNode(i).setHeight(ROOT_HEIGHT+i*ROOT_HEIGHT/1e10);
     		}
 
     		// add information from pruned trees one by one
@@ -80,18 +77,43 @@ public class SourceTreeFromPrunedTrees extends Runnable {
     		}
     		
     		// log the result
+    		out.println();
     		sourceTree.log(k, out);
     		k++;
+    		if (k % 10 == 0) {
+        		if (k % 100 == 0) {
+        			Log.warning.print("|");
+        		} else {
+        			Log.warning.print(".");
+        		}
+    		}
         }
         
-		tree.close(out);
+		out.println();
+		sourceTree.close(out);
         
+		Log.warning("\nDone");
 	}
 	
-	private void merge(Tree sourceTree, Tree tree) {		
+	private TaxonSet getTaxonSet() {
+		NexusParser parser = new NexusParser();
+		try {
+			parser.parseFile(treesInput.get().get(0));
+		} catch (Throwable e) {
+			// ignore
+		}
+		List<Taxon> taxa = new ArrayList<>();
+		for (String taxon : parser.taxa) {
+			taxa.add(new Taxon(taxon));
+		}
+		TaxonSet taxonset = new TaxonSet(taxa);
+		return taxonset;
+	}
+
+	private void merge(Tree sourceTree, Tree prunedTree) {		
 		// sort nodes of tree to be merged in height
-		Node [] nodes = tree.getNodesAsArray();
-		int n = tree.getLeafNodeCount();
+		Node [] nodes = prunedTree.getNodesAsArray();
+		int n = prunedTree.getLeafNodeCount();
 		Arrays.sort(nodes, new Comparator<Node>() {
 			@Override
 			public int compare(Node o1, Node o2) {
@@ -117,19 +139,32 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 				
 		// merge nodes
 		for (int i = n; i < nodes.length; i++) {
-			Node node = nodes[i];
-			if (node.getChildCount() > 0) {
-				merge(sourceTree, node);
-			}
+			merge(sourceTree, nodes[i]);
 		}
 	}
 
-	private void merge(Tree targetTree, Node node) {
+	private void merge(Tree sourceTree, Node node) {
+		//System.out.println(sourceTree.getRoot().toNewick());
+		
+
 		List<Node> prunedLeafs = node.getAllLeafNodes();
+		if (prunedLeafs.size() == sourceTree.getLeafNodeCount()) {
+			double h = sourceTree.getRoot().getHeight();
+			if (h >= ROOT_HEIGHT) {
+				sourceTree.getRoot().setHeight(node.getHeight());
+			} else {
+				if (Math.abs(h - node.getHeight()) > 1e-6) {
+					Log.warning("Inconsistent root heights in pruned trees " + h + " " + node.getHeight());
+				}
+			}
+			return;
+		}
+		
 		List<Node> leafs = new ArrayList<>();
-		Node [] nodes = targetTree.getNodesAsArray();
+		Node [] nodes = sourceTree.getNodesAsArray();
 		for (Node n : prunedLeafs) {
 			String id = n.getID();
+//System.out.println(id);
 			for (int i = 0; i < nodes.length; i++) {
 				if (id.equals(nodes[i].getID())) {
 					leafs.add(nodes[i]);
@@ -138,52 +173,76 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 			}
 		}
 		
+		
 		// find nodes to merge in target tree
-		Node mrca = getMRCA(targetTree, leafs);
+		Node mrca = getMRCA(sourceTree, leafs);
 		if (mrca.getHeight() >= ROOT_HEIGHT) {
-			mrca.setHeight(node.getHeight());
-			while (mrca.getLeft().getHeight() >= ROOT_HEIGHT) {
-				Node left = mrca.getLeft();
-				if (!left.isLeaf()) {
-					Node c = left.getLeft();
-					if (c.isLeaf() && left.getRight().isLeaf() && !leafs.contains(c)) {
-						c = left.getRight();
-					}
-					Node p = mrca.getParent();
-	
-					if (mrca.isRoot()) { // then p == null
-						// p.removeChild(mrca);
-						mrca.removeChild(left);
-						left.removeChild(c);
-						
-						// p.addChild(left);
-						mrca.addChild(c);
-						left.addChild(mrca);
-		
-						c.setParent(mrca);
-						mrca.setParent(left);
-						
-						left.setParent(null);
-						targetTree.setRoot(left);
-					} else {
-						p.removeChild(mrca);
-						mrca.removeChild(left);
-						left.removeChild(c);
-						
-						p.addChild(left);
-						mrca.addChild(c);
-						left.addChild(mrca);
-		
-						c.setParent(mrca);
-						left.setParent(p);
-						mrca.setParent(left);
-					}
+			// we need to add new node to tree
+			Node [] subRootArray = subRoot.toArray(new Node[] {});
+			Node left = subRootArray[0];
+			Node right = subRootArray[1];
+			Node lp = left.getParent();
+			Node rp = right.getParent();
+			if (lp == rp) {
+				// no need to change topology
+				mrca.setHeight(node.getHeight());				
+			} else {
+				int k = sourceTree.getLeafNodeCount();
+				while (nodes[k].getHeight() < ROOT_HEIGHT) {
+					k++;
 				}
+				Node n = nodes[k];
+				if (n == lp) {
+					// swap lp.otherchild with right
+					rp.removeChild(right);
+					Node other = otherChild(n, left);
+					n.removeChild(other);
+					rp.addChild(other);
+					n.addChild(right);
+					other.setParent(rp);
+					right.setParent(n);
+				} else if (n == rp) {
+					// swap rp.otherchild with left
+					lp.removeChild(left);
+					Node other = otherChild(n, right);
+					n.removeChild(other);
+					lp.addChild(other);
+					n.addChild(left);
+					other.setParent(lp);
+					left.setParent(n);
+				} else {
+					Node nLeft = n.getLeft();
+					Node nRight = n.getRight();
+					// swap n.left with left
+					lp.removeChild(left);
+					n.removeChild(nLeft);
+					lp.addChild(nLeft);
+					n.addChild(left);
+					nLeft.setParent(lp);
+					left.setParent(n);
+					// swap n.right with right
+					rp.removeChild(right);
+					n.removeChild(nRight);
+					rp.addChild(nRight);
+					n.addChild(right);
+					nRight.setParent(rp);
+					right.setParent(n);
+				}
+				n.setHeight(node.getHeight());
 			}
 		}
+//		System.out.println(sourceTree.getRoot().toNewick());
 	}
 	
-    boolean [] nodesTraversed;
+    private Node otherChild(Node n, Node child) {
+		if (n.getLeft() == child) {
+			return n.getRight();
+		}
+		return n.getLeft();
+	}
+
+	boolean [] nodesTraversed;
+    Set<Node> subRoot;
     protected int nseen;
 
     protected Node getCommonAncestor(Node n1, Node n2) {
@@ -200,12 +259,22 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 	        double h1 = n1.getHeight();
 	        double h2 = n2.getHeight();
 	        if ( h1 < h2 ) {
+	        	if (!n1.isRoot() && n1.getParent().getHeight() >= ROOT_HEIGHT) {
+	        		if (n1.getHeight() < ROOT_HEIGHT) {
+	        			subRoot.add(n1);
+	        		}
+	        	}
 	            n1 = n1.getParent();
 	            if( ! nodesTraversed[n1.getNr()] ) {
 	                nodesTraversed[n1.getNr()] = true;
 	                nseen += 1;
 	            }
 	        } else if( h2 < h1 ) {
+	        	if (!n2.isRoot() && n2.getParent().getHeight() >= ROOT_HEIGHT) {
+	        		if (n2.getHeight() < ROOT_HEIGHT) {
+	        			subRoot.add(n2);
+	        		}
+	        	}
 	            n2 = n2.getParent();
 	            if( ! nodesTraversed[n2.getNr()] ) {
 	                nodesTraversed[n2.getNr()] = true;
@@ -237,8 +306,18 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 	                }
 	            }
 	            if( n == n1 ) {
+		        	if (!n1.isRoot() && n1.getParent().getHeight() >= ROOT_HEIGHT) {
+		        		if (n1.getHeight() < ROOT_HEIGHT) {
+		        			subRoot.add(n1);
+		        		}
+		        	}
                     n = n1 = n.getParent();
                 } else {
+    	        	if (!n2.isRoot() && n2.getParent().getHeight() >= ROOT_HEIGHT) {
+    	        		if (n2.getHeight() < ROOT_HEIGHT) {
+    	        			subRoot.add(n2);
+    	        		}
+    	        	}
                     n = n2 = n.getParent();
                 }
 	            if( ! nodesTraversed[n.getNr()] ) {
@@ -252,6 +331,7 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 
 	protected Node getMRCA(Tree tree, List<Node> leafs) {
         nodesTraversed = new boolean[tree.getRoot().getAllChildNodesAndSelf().size()];
+        subRoot = new HashSet<>();
         nseen = 0;
         Node cur = leafs.get(0);
 
@@ -262,6 +342,6 @@ public class SourceTreeFromPrunedTrees extends Runnable {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new Application(new SourceTreeFromPrunedTrees(), "", args);
+		new Application(new SourceTreeFromPrunedTrees(), "Source Tree From Pruned Trees", args);
 	}
 }
