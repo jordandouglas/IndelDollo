@@ -26,7 +26,7 @@ public class PrunedTreeLikelihood extends TreeLikelihood {
 	
 	protected PrunedBeagleTreeLikelihood beaglePruned;
 	
-	CognatePrunedTree prunedTree;
+	protected CognatePrunedTree prunedTree;
 	
 	@Override
     public void initAndValidate() {
