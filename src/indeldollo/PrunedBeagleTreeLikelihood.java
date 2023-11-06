@@ -662,6 +662,10 @@ public class PrunedBeagleTreeLikelihood extends TreeLikelihood {
         super.store();
         System.arraycopy(m_branchLengths, 0, storedBranchLengths, 0, m_branchLengths.length);
     }
+    
+    public void forceRecalculation() {
+    	hasDirt = Tree.IS_DIRTY;
+    }
 
     @Override
     public void restore() {

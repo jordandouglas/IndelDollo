@@ -335,6 +335,13 @@ public class PrunedTreeLikelihood extends TreeLikelihood {
     } 
     
     
+    public void forceRecalculation() {
+    	if (beaglePruned != null) {
+            beaglePruned.forceRecalculation();
+        }
+    	hasDirt = Tree.IS_DIRTY;
+    }
+    
     
     @Override
 	protected boolean requiresRecalculation() {
